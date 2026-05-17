@@ -1,0 +1,67 @@
+---
+title: Pagination
+description: paginate and chunkArray — interactive embed menus with prev/next buttons.
+---
+
+# Pagination
+
+## paginate
+
+Sends an array of embeds as an interactive paginated message with previous/next buttons.
+
+```js
+await paginate(interaction, embeds, options?)
+```
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `interaction` | `CommandInteraction` | — | The interaction to reply to |
+| `embeds` | `EmbedBuilder[]` | — | Array of embeds to paginate |
+| `options.timeout` | `number` | `60000` | How long until buttons disable (ms) |
+| `options.ephemeral` | `boolean` | `false` | Whether the reply is ephemeral |
+
+```js
+const { paginate, infoEmbed } = require('discord.js-toolbox');
+
+const pages = [
+  infoEmbed('Page 1 content', 'Commands — Page 1/3'),
+  infoEmbed('Page 2 content', 'Commands — Page 2/3'),
+  infoEmbed('Page 3 content', 'Commands — Page 3/3'),
+];
+
+await paginate(interaction, pages, { timeout: 120000 });
+```
+
+If you pass a single embed, it still works — it just won't show buttons.
+
+---
+
+## chunkArray
+
+Splits any array into chunks of a given size. Useful for building embed pages from a list of items.
+
+```js
+chunkArray(array, size)
+```
+
+```js
+const { chunkArray, buildCard, paginate } = require('discord.js-toolbox');
+
+const allItems = guild.members.cache.map(m => ({
+  name: m.user.tag,
+  value: m.id,
+  inline: true,
+}));
+
+const chunks = chunkArray(allItems, 9); // 9 fields per page
+
+const pages = chunks.map((fields, i) =>
+  buildCard({
+    title: `Members — Page ${i + 1}/${chunks.length}`,
+    fields,
+    color: 0x5865F2,
+  })
+);
+
+await paginate(interaction, pages);
+```

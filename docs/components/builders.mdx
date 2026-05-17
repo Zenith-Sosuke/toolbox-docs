@@ -1,0 +1,156 @@
+---
+title: Builders
+description: buildTextDisplay, buildSeparator, buildThumbnail, buildSection, buildMediaGallery, buildFile, buildContainer.
+---
+
+# Component Builders
+
+## buildTextDisplay
+
+The V2 replacement for the `content` field. Supports all Discord markdown — headers, bold, mentions, timestamps, code blocks.
+
+```js
+buildTextDisplay(content)
+```
+
+```js
+buildTextDisplay('# Welcome to the server!')
+buildTextDisplay(`**${user.tag}** joined <t:${Math.floor(Date.now() / 1000)}:R>`)
+```
+
+<Warning>
+  Mentions in TextDisplay **will** ping users and roles. Wrap them in `sanitizeInput` if the content comes from user input.
+</Warning>
+
+---
+
+## buildSeparator
+
+Adds vertical spacing between components, with or without a visible dividing line.
+
+```js
+buildSeparator({ divider?, spacing? })
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `divider` | `boolean` | `true` | Show a horizontal line |
+| `spacing` | `'small' \| 'large'` | `'small'` | Padding amount |
+
+```js
+buildSeparator()                                    // line + small gap (default)
+buildSeparator({ divider: false, spacing: 'large' }) // just whitespace
+```
+
+---
+
+## buildThumbnail
+
+Creates a thumbnail for use as a Section accessory. Supports external URLs and attachment references.
+
+```js
+buildThumbnail({ url, altText?, spoiler? })
+```
+
+```js
+buildThumbnail({ url: member.displayAvatarURL(), altText: 'User avatar' })
+buildThumbnail({ url: 'attachment://banner.png', spoiler: true })
+```
+
+---
+
+## buildSection
+
+A section lays out 1–3 lines of text with an optional accessory to the right — either a button or a thumbnail.
+
+```js
+buildSection({ text, button?, thumbnail? })
+```
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `text` | `string \| string[]` | 1 to 3 text lines |
+| `button` | `{ customId, label, style?, emoji? }` | Button accessory |
+| `thumbnail` | `ThumbnailBuilder` | Thumbnail accessory |
+
+You can use a button or a thumbnail as the accessory, not both.
+
+```js
+// With a button
+buildSection({
+  text: ['## ZenithFKX', 'Bot Developer', 'Node.js · discord.js v14'],
+  button: { customId: 'view-profile', label: 'View Profile', style: ButtonStyle.Secondary },
+})
+
+// With a thumbnail
+buildSection({
+  text: `**${user.tag}**`,
+  thumbnail: buildThumbnail({ url: user.displayAvatarURL() }),
+})
+```
+
+---
+
+## buildMediaGallery
+
+Displays between 1 and 10 images in a grid layout.
+
+```js
+buildMediaGallery(items)
+```
+
+Each item: `{ url, altText?, spoiler? }`
+
+```js
+buildMediaGallery([
+  { url: 'https://example.com/screenshot1.png', altText: 'Before' },
+  { url: 'https://example.com/screenshot2.png', altText: 'After' },
+])
+```
+
+---
+
+## buildFile
+
+Displays an uploaded file inline in the message. The URL must use the `attachment://` scheme, and the actual file must be passed in the `files` array.
+
+```js
+buildFile(url, spoiler?)
+```
+
+```js
+const { AttachmentBuilder } = require('discord.js');
+const { v2Reply, buildFile } = require('discord.js-toolbox');
+
+const file = new AttachmentBuilder('./report.pdf');
+
+await interaction.reply({
+  ...v2Reply([buildFile('attachment://report.pdf')]),
+  files: [file],
+});
+```
+
+---
+
+## buildContainer
+
+Wraps any set of V2 components in a rounded, visually distinct box. Supports an accent color strip on the left edge.
+
+```js
+buildContainer(builderFn, { accentColor?, spoiler? })
+```
+
+```js
+const { buildContainer, buildTextDisplay, buildSeparator, buildSection } = require('discord.js-toolbox');
+
+const card = buildContainer((c) =>
+  c
+    .addTextDisplayComponents(buildTextDisplay('# Server Stats'))
+    .addSeparatorComponents(buildSeparator())
+    .addSectionComponents(
+      buildSection({ text: ['**Members:** 1,234', '**Online:** 456'] })
+    )
+, { accentColor: 0x57F287 });
+
+await interaction.reply(v2Reply([card]));
+```

@@ -1,0 +1,63 @@
+---
+title: Permissions
+description: Quick permission checks for members and bot channel permissions.
+---
+
+# Permissions
+
+## Member checks
+
+Quick checks based on a member's roles and permissions. Useful for command guards.
+
+```js
+isOwner(member)      // has Administrator or is the guild owner
+isAdmin(member)      // has Administrator
+isModerator(member)  // has ManageMessages or BanMembers or KickMembers
+```
+
+```js
+const { isModerator, errorEmbed } = require('discord.js-toolbox');
+
+if (!isModerator(interaction.member)) {
+  return interaction.reply({
+    embeds: [errorEmbed('You need moderator permissions to use this.')],
+    ephemeral: true,
+  });
+}
+```
+
+---
+
+## Bot channel permissions
+
+Checks whether the bot itself has the permissions it needs in a specific channel.
+
+```js
+const { PermissionFlagsBits } = require('discord.js');
+
+botHasChannelPerm(channel, PermissionFlagsBits.SendMessages)
+// → true/false
+
+botMissingChannelPerms(channel, [
+  PermissionFlagsBits.SendMessages,
+  PermissionFlagsBits.EmbedLinks,
+  PermissionFlagsBits.AttachFiles,
+])
+// → ['EmbedLinks'] — array of missing permission names
+```
+
+Good to check before trying to send in a channel you weren't explicitly invoked in:
+
+```js
+const missing = botMissingChannelPerms(logChannel, [
+  PermissionFlagsBits.SendMessages,
+  PermissionFlagsBits.EmbedLinks,
+]);
+
+if (missing.length) {
+  console.warn(`Missing in log channel: ${missing.join(', ')}`);
+  return;
+}
+
+await logChannel.send({ embeds: [logEmbed] });
+```

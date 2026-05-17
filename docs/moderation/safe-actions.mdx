@@ -1,0 +1,107 @@
+---
+title: Safe Actions
+description: safeBan, safeKick, safeTimeout, and safeUnban.
+---
+
+# Safe Actions
+
+These wrap discord.js's built-in moderation methods with proper error handling. They all throw descriptive errors on failure, so you can catch them and reply cleanly.
+
+## safeBan
+
+```js
+await safeBan(member, reason, deleteMessageDays);
+```
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `member` | `GuildMember` | — | The member to ban |
+| `reason` | `string` | `undefined` | Audit log reason |
+| `deleteMessageDays` | `number` | `0` | Days of messages to delete (0–7) |
+
+**Example:**
+
+```js
+const { canModerate, safeBan, successEmbed, errorEmbed } = require('discord.js-toolbox');
+
+module.exports = {
+  name: 'ban',
+  async execute(interaction) {
+    const target = interaction.options.getMember('user');
+    const reason = interaction.options.getString('reason') ?? 'No reason provided';
+
+    const { ok, reason: whyNot } = canModerate(target, interaction.member);
+    if (!ok) {
+      return interaction.reply({ embeds: [errorEmbed(whyNot)], ephemeral: true });
+    }
+
+    try {
+      await safeBan(target, reason, 1);
+      await interaction.reply({ embeds: [successEmbed(`**${target.user.tag}** was banned.`)] });
+    } catch (err) {
+      await interaction.reply({ embeds: [errorEmbed(err.message)], ephemeral: true });
+    }
+  },
+};
+```
+
+---
+
+## safeKick
+
+```js
+await safeKick(member, reason);
+```
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `member` | `GuildMember` | — | The member to kick |
+| `reason` | `string` | `undefined` | Audit log reason |
+
+---
+
+## safeTimeout
+
+```js
+await safeTimeout(member, durationMs, reason);
+```
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `member` | `GuildMember` | — | The member to time out |
+| `durationMs` | `number` | — | Timeout length in milliseconds |
+| `reason` | `string` | `undefined` | Audit log reason |
+
+Works well with `parseDuration` if you're taking duration input from a user:
+
+```js
+const { safeTimeout, parseDuration } = require('discord.js-toolbox');
+
+const ms = parseDuration('30m'); // 1800000
+await safeTimeout(member, ms, 'Spamming');
+```
+
+---
+
+## safeUnban
+
+```js
+await safeUnban(guild, userId, reason);
+```
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `guild` | `Guild` | — | The guild to unban from |
+| `userId` | `string` | — | The user's ID |
+| `reason` | `string` | `undefined` | Audit log reason |
+
+```js
+const { safeUnban, successEmbed, errorEmbed } = require('discord.js-toolbox');
+
+try {
+  await safeUnban(interaction.guild, userId, 'Appeal approved');
+  await interaction.reply({ embeds: [successEmbed('User unbanned.')] });
+} catch (err) {
+  await interaction.reply({ embeds: [errorEmbed(err.message)], ephemeral: true });
+}
+```

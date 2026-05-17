@@ -1,0 +1,48 @@
+---
+title: Installation
+description: Get discord.js-toolbox into your project.
+---
+
+## Install
+
+```bash
+npm install discord.js discord.js-toolbox
+```
+
+Both `discord.js` and `discord.js-toolbox` are required. The toolbox doesn't bundle discord.js — it expects you to have it installed yourself.
+
+## Import
+
+Everything is exported from the root, so you can pick exactly what you need:
+
+```js
+const {
+  safeBan,
+  successEmbed,
+  CooldownManager,
+  paginate,
+} = require('discord.js-toolbox');
+```
+
+Or grab everything at once:
+
+```js
+const toolbox = require('discord.js-toolbox');
+```
+
+## TypeScript
+
+Type definitions are included out of the box — no `@types` package needed.
+
+```ts
+import {
+  safeBan,
+  successEmbed,
+  CooldownManager,
+  type CanModerateResult,
+} from 'discord.js-toolbox';
+```
+
+<Note>
+  If you're using `"moduleResolution": "node"` in your tsconfig, make sure `"esModuleInterop": true` is set too.
+</Note>

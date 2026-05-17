@@ -1,0 +1,38 @@
+---
+title: Introduction
+description: A utility library for building Discord bots with discord.js v14.
+---
+
+# discord.js-toolbox
+
+A collection of helpers I kept rewriting across every bot I built. Instead of copy-pasting the same moderation safety checks, embed boilerplate, and pagination logic into every project, I packaged it up.
+
+Everything here is built for **discord.js v14** and assumes you're writing a real bot — not a tutorial project. The functions are small, focused, and don't try to abstract too much.
+
+## What's in the box
+
+<CardGroup cols={2}>
+  <Card title="Moderation" icon="shield" href="/docs/moderation/overview">
+    Safe ban, kick, timeout, and DM helpers that won't crash on role hierarchy errors.
+  </Card>
+  <Card title="Embeds" icon="palette" href="/docs/embeds/overview">
+    Prebuilt success, error, warn, info, and loading embeds. Consistent styling across your whole bot.
+  </Card>
+  <Card title="Components V2" icon="layout" href="/docs/components/overview">
+    Full support for Discord's new display component system — containers, sections, media galleries, and more.
+  </Card>
+  <Card title="Pagination" icon="arrow-right" href="/docs/utilities/pagination">
+    Drop-in paginated embeds with prev/next buttons. Works with any array of EmbedBuilders.
+  </Card>
+  <Card title="Cooldowns" icon="clock" href="/docs/utilities/cooldowns">
+    Per-user, per-command cooldown tracking with no external dependencies.
+  </Card>
+  <Card title="Logging" icon="terminal" href="/docs/utilities/logging">
+    Named loggers with ANSI colors, log levels, timestamps, and async timing helpers.
+  </Card>
+</CardGroup>
+
+## Requirements
+
+- Node.js 18 or higher
+- discord.js v14

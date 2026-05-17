@@ -1,0 +1,55 @@
+---
+title: Retry
+description: retry() with exponential backoff and sleep().
+---
+
+# Retry
+
+## retry
+
+Retries an async function with exponential backoff and optional jitter. Useful for API calls that occasionally fail.
+
+```js
+retry(fn, options?)
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `attempts` | `number` | `3` | Max number of tries |
+| `baseDelay` | `number` | `500` | Initial delay in ms |
+| `maxDelay` | `number` | `10000` | Cap on delay |
+| `factor` | `number` | `2` | Backoff multiplier |
+| `jitter` | `boolean` | `true` | Add randomness to prevent thundering herd |
+| `shouldRetry` | `(err, attempt) => boolean` | Always retry | Custom retry logic |
+| `onRetry` | `(err, attempt, delay) => void` | No-op | Called before each retry |
+
+```js
+const { retry } = require('discord.js-toolbox');
+
+const data = await retry(
+  () => fetch('https://api.example.com/data').then(r => r.json()),
+  {
+    attempts: 5,
+    baseDelay: 1000,
+    onRetry: (err, attempt) => console.warn(`Attempt ${attempt} failed: ${err.message}`),
+  }
+);
+```
+
+Only retry on specific errors:
+
+```js
+await retry(() => someApiCall(), {
+  shouldRetry: (err) => err.status === 429 || err.code === 'ECONNRESET',
+});
+```
+
+---
+
+## sleep
+
+Simple promise-based delay.
+
+```js
+await sleep(1000); // wait 1 second
+```

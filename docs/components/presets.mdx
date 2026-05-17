@@ -1,0 +1,74 @@
+---
+title: Preset Containers
+description: v2InfoCard and v2ProfileCard — ready-made V2 layouts.
+---
+
+# Preset Containers
+
+Two ready-made containers for the most common V2 use cases. Both return a `ContainerBuilder` you can pass directly into `v2Reply`.
+
+## v2InfoCard
+
+An info card with an optional header, a body, and an optional footer. Direct replacement for `infoEmbed` in V2 contexts.
+
+```js
+v2InfoCard({ body, header?, footer?, color? })
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `body` | `string` | — | Main content (required) |
+| `header` | `string` | `undefined` | Shown above the body |
+| `footer` | `string` | `undefined` | Shown below a separator in smaller text |
+| `color` | `number` | `0x5865F2` | Accent strip color |
+
+```js
+const { v2Reply, v2InfoCard } = require('discord.js-toolbox');
+
+await interaction.reply(v2Reply([
+  v2InfoCard({
+    header: '📋 Server Info',
+    body: `**Members:** ${guild.memberCount}\n**Created:** <t:${Math.floor(guild.createdTimestamp / 1000)}:R>`,
+    footer: 'Requested by ' + interaction.user.tag,
+    color: 0x5865F2,
+  }),
+]));
+```
+
+---
+
+## v2ProfileCard
+
+A profile card with an avatar thumbnail on the right, a title, optional detail lines, and optional key-value fields below.
+
+```js
+v2ProfileCard({ title, avatarUrl, lines?, fields?, color? })
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `title` | `string` | — | Bold name line (required) |
+| `avatarUrl` | `string` | — | Image shown as right-side thumbnail (required) |
+| `lines` | `string[]` | `[]` | Up to 2 extra lines beside the avatar |
+| `fields` | `{ label, value }[]` | `[]` | Key-value rows shown below a separator |
+| `color` | `number` | `undefined` | Accent strip color |
+
+```js
+const { v2Reply, v2ProfileCard, memberAge, accountAge } = require('discord.js-toolbox');
+
+await interaction.reply(v2Reply([
+  v2ProfileCard({
+    title: `**${member.user.tag}**`,
+    avatarUrl: member.displayAvatarURL({ size: 256 }),
+    lines: [
+      `Joined ${memberAge(member)}`,
+      `${member.roles.cache.size - 1} roles`,
+    ],
+    fields: [
+      { label: 'Account created', value: accountAge(member.user) },
+      { label: 'ID', value: member.id },
+    ],
+    color: member.displayColor || 0x5865F2,
+  }),
+]));
+```

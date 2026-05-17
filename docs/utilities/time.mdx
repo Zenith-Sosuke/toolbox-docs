@@ -1,0 +1,59 @@
+---
+title: Time
+description: Date formatting and relative time helpers for Discord bots.
+---
+
+# Time
+
+## Relative time
+
+```js
+timeAgo(new Date(Date.now() - 3600000))  // → '1 hour ago'
+timeAgo(new Date(Date.now() - 86400000)) // → '1 day ago'
+```
+
+---
+
+## Account and member age
+
+These take a `User` or `GuildMember` directly — no need to do the timestamp math yourself.
+
+```js
+accountAge(user)    // → '2 years ago' (when the Discord account was created)
+memberAge(member)   // → '3 months ago' (when they joined the server)
+```
+
+Good for info commands:
+
+```js
+const { accountAge, memberAge, buildCard } = require('discord.js-toolbox');
+
+const embed = buildCard({
+  title: member.user.tag,
+  thumbnail: member.displayAvatarURL(),
+  fields: [
+    { name: 'Account created', value: accountAge(member.user), inline: true },
+    { name: 'Joined server', value: memberAge(member), inline: true },
+  ],
+});
+```
+
+---
+
+## Date formatting
+
+```js
+shortDate(new Date())   // → '17/05/2026'
+fullDate(new Date())    // → '17 May 2026 at 14:30'
+```
+
+---
+
+## Other
+
+```js
+addDuration(new Date(), 3600000)  // → Date object 1 hour from now
+toUnix(new Date())                // → Unix timestamp in seconds (for Discord timestamps)
+msToSeconds(5000)                 // → 5
+daysUntil(new Date('2026-12-31')) // → days until that date
+```

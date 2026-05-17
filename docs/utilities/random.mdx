@@ -1,0 +1,71 @@
+---
+title: Random
+description: randomChoice, randomSample, shuffle, randomInt, chance.
+---
+
+# Random
+
+Small helpers for when you need random behavior — giveaways, randomized responses, picking items from a list.
+
+## randomChoice
+
+Picks one item from an array at random.
+
+```js
+randomChoice(['rock', 'paper', 'scissors']) // → 'paper'
+randomChoice(guild.members.cache.toJSON())   // → a random GuildMember
+```
+
+---
+
+## randomSample
+
+Picks `n` unique items from an array.
+
+```js
+randomSample(['a', 'b', 'c', 'd', 'e'], 3) // → ['c', 'a', 'e'] (order varies)
+```
+
+---
+
+## shuffle
+
+Returns a new shuffled copy of an array. Doesn't mutate the original.
+
+```js
+shuffle([1, 2, 3, 4, 5]) // → [3, 1, 5, 2, 4]
+```
+
+---
+
+## randomInt
+
+Random integer between `min` and `max` inclusive.
+
+```js
+randomInt(1, 6)    // → dice roll
+randomInt(0, 100)  // → percentage
+```
+
+---
+
+## chance
+
+Returns `true` with a given probability between 0 and 1.
+
+```js
+chance(0.5)   // 50% chance of true
+chance(0.1)   // 10% chance of true
+chance(1)     // always true
+chance(0)     // always false
+```
+
+```js
+const { chance, successEmbed } = require('discord.js-toolbox');
+
+// 20% chance to crit
+if (chance(0.2)) {
+  damage *= 2;
+  await interaction.reply({ embeds: [successEmbed('Critical hit! 💥')] });
+}
+```

@@ -1,0 +1,70 @@
+---
+title: Validators
+description: Input validation helpers for IDs, URLs, hex colors, permissions, and more.
+---
+
+# Validators
+
+## IDs and URLs
+
+```js
+isValidId('822374428541190155')           // → true
+isValidId('not-an-id')                    // → false
+
+isValidUrl('https://discord.com')         // → true
+isValidUrl('not a url')                   // → false
+
+isImageUrl('https://example.com/img.png') // → true (checks extension)
+```
+
+---
+
+## Colors
+
+```js
+isValidHex('#5865F2')   // → true
+isValidHex('5865F2')    // → false (needs the #)
+
+hexToInt('#5865F2')     // → 5792242 (use this for embed colors)
+```
+
+---
+
+## Permissions
+
+```js
+const { PermissionFlagsBits } = require('discord.js');
+
+hasPermissions(member, [PermissionFlagsBits.BanMembers, PermissionFlagsBits.KickMembers])
+// → true/false
+
+getMissingPermissions(member, [PermissionFlagsBits.BanMembers, PermissionFlagsBits.ManageRoles])
+// → ['ManageRoles'] — array of missing permission names as strings
+```
+
+---
+
+## Range checks
+
+```js
+isInRange('hello', 1, 100)     // → true (string length check)
+isInRange('', 1, 100)          // → false
+
+inNumericRange(50, 1, 100)     // → true
+inNumericRange(150, 1, 100)    // → false
+
+clamp(150, 1, 100)             // → 100
+clamp(-5, 0, 100)              // → 0
+```
+
+---
+
+## Duration and guild
+
+```js
+isValidDuration('10m')   // → true
+isValidDuration('2h')    // → true
+isValidDuration('abc')   // → false
+
+isValidRole(guild, roleId)  // → true if the role exists in the guild
+```

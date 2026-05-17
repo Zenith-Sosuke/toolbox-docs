@@ -1,0 +1,86 @@
+---
+title: Preset Embeds
+description: successEmbed, errorEmbed, warnEmbed, infoEmbed, loadingEmbed.
+---
+
+# Preset Embeds
+
+## successEmbed
+
+```js
+successEmbed(description, title?)
+```
+
+Green embed. Use it for confirmations — bans, kicks, config changes, anything that worked.
+
+```js
+await interaction.reply({ embeds: [successEmbed('Role assigned successfully.')] });
+await interaction.reply({ embeds: [successEmbed('Config updated.', 'Settings Saved')] });
+```
+
+---
+
+## errorEmbed
+
+```js
+errorEmbed(description, title?)
+```
+
+Red embed. Use it whenever something fails — missing permissions, invalid input, API errors.
+
+```js
+await interaction.reply({
+  embeds: [errorEmbed('You need the `Ban Members` permission.')],
+  ephemeral: true,
+});
+```
+
+---
+
+## warnEmbed
+
+```js
+warnEmbed(description, title?)
+```
+
+Yellow embed. Good for warnings, confirmations before destructive actions, or rate limit notices.
+
+```js
+await interaction.reply({
+  embeds: [warnEmbed('This will delete all data. Are you sure?')],
+});
+```
+
+---
+
+## infoEmbed
+
+```js
+infoEmbed(description, title?)
+```
+
+Blue embed. For neutral informational replies — help text, status checks, listings.
+
+```js
+await interaction.reply({
+  embeds: [infoEmbed(`Server has **${guild.memberCount}** members.`, 'Server Info')],
+});
+```
+
+---
+
+## loadingEmbed
+
+```js
+loadingEmbed(description, title?)
+```
+
+Grey embed. Send this first, then edit the reply when the operation finishes.
+
+```js
+await interaction.reply({ embeds: [loadingEmbed('Fetching data...')] });
+
+// ... do stuff ...
+
+await interaction.editReply({ embeds: [successEmbed('Done!')] });
+```

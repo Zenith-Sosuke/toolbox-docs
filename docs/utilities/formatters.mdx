@@ -1,0 +1,75 @@
+---
+title: Formatters
+description: String and number formatting utilities.
+---
+
+# Formatters
+
+## Text
+
+```js
+truncate('This is a very long string that goes on forever', 20)
+// → 'This is a very long…'
+
+titleCase('hello world')
+// → 'Hello World'
+
+pluralize(1, 'member')   // → '1 member'
+pluralize(5, 'member')   // → '5 members'
+
+getTag(user)
+// → 'zenith' (new username system) or 'Zenith#0001' (legacy)
+```
+
+---
+
+## Numbers
+
+```js
+formatNumber(1500000)  // → '1,500,000'
+formatBytes(2048000)   // → '1.95 MB'
+```
+
+---
+
+## Discord mentions
+
+```js
+mention('822374428541190155')          // → '<@822374428541190155>'
+channelMention('1234567890')           // → '<#1234567890>'
+roleMention('9876543210')              // → '<@&9876543210>'
+```
+
+---
+
+## Code formatting
+
+```js
+codeBlock('const x = 1;', 'js')
+// → '```js\nconst x = 1;\n```'
+
+inlineCode('npm install')
+// → '`npm install`'
+
+stripMarkdown('**bold** and _italic_')
+// → 'bold and italic'
+```
+
+---
+
+## Discord timestamps
+
+```js
+discordTimestamp(new Date(), 'R')   // → '<t:1716000000:R>' (relative: "3 hours ago")
+discordTimestamp(new Date(), 'F')   // → '<t:1716000000:F>' (full: "Sunday, 18 May 2025 9:30 PM")
+```
+
+| Style | Output |
+|-------|--------|
+| `t` | 9:30 PM |
+| `T` | 9:30:00 PM |
+| `d` | 03/22/2026 |
+| `D` | March 22, 2026 |
+| `f` | March 22, 2026 9:30 PM |
+| `F` | Sunday, March 22, 2026 9:30 PM |
+| `R` | 3 hours ago |

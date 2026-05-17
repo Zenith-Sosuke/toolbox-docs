@@ -1,0 +1,58 @@
+---
+title: Overview
+description: Safe moderation helpers for discord.js v14.
+---
+
+# Moderation
+
+The most common source of bot crashes in moderation commands is Discord's permission and role hierarchy system. If your bot tries to ban someone with a higher role, or doesn't have the right permissions in a channel, discord.js throws — and if you're not catching it, your bot just silently fails or goes down.
+
+These helpers check everything before acting and throw clean errors you can actually respond to.
+
+## canModerate
+
+Before doing anything to a member, run them through `canModerate`. It checks role hierarchy and whether the target is bannable/kickable, and tells you exactly why it failed if it does.
+
+```js
+const { canModerate, errorEmbed } = require('discord.js-toolbox');
+
+const { ok, reason } = canModerate(targetMember, interaction.member);
+
+if (!ok) {
+  return interaction.reply({
+    embeds: [errorEmbed(reason)],
+    ephemeral: true,
+  });
+}
+```
+
+### Returns
+
+```ts
+{ ok: boolean; reason?: string }
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `ok` | `boolean` | Whether the action can proceed |
+| `reason` | `string \| undefined` | Human-readable reason if `ok` is false |
+
+---
+
+## dmUser
+
+DMs a member before taking action against them. Returns `true` if the DM was sent, `false` if it failed (e.g. they have DMs off). Never throws.
+
+```js
+const { dmUser, warnEmbed } = require('discord.js-toolbox');
+
+// Try to DM them, but don't stop if it fails
+await dmUser(member, warnEmbed(`You were warned in **${guild.name}** for: ${reason}`));
+```
+
+---
+
+## Next steps
+
+- [Safe Actions](/docs/moderation/safe-actions) — ban, kick, timeout, and unban
+- [Duration Parsing](/docs/moderation/duration) — `parseDuration` and `formatDuration`

@@ -1,0 +1,71 @@
+---
+title: Errors
+description: Custom error classes for cleaner error handling in bot commands.
+---
+
+# Errors
+
+Custom error classes so your catch blocks can tell what went wrong without parsing message strings.
+
+## Usage
+
+```js
+const {
+  PermissionError,
+  UserNotFoundError,
+  InvalidArgumentError,
+  CooldownError,
+  RateLimitError,
+  NotInGuildError,
+} = require('discord.js-toolbox');
+```
+
+---
+
+## Error classes
+
+| Class | When to throw |
+|-------|---------------|
+| `PermissionError` | User lacks required permissions |
+| `UserNotFoundError` | Couldn't find the target user |
+| `InvalidArgumentError(message)` | Bad input — pass a specific message |
+| `CooldownError(remaining)` | User is on cooldown — pass remaining ms |
+| `RateLimitError(retryAfter)` | Hit a rate limit — pass retry delay in ms |
+| `NotInGuildError` | Command used in DMs when it requires a guild |
+
+---
+
+## Example
+
+Throwing and catching these in a command:
+
+```js
+const { InvalidArgumentError, CooldownError, errorEmbed } = require('discord.js-toolbox');
+
+async function execute(interaction) {
+  try {
+    const duration = parseDuration(interaction.options.getString('duration'));
+    if (isNaN(duration)) throw new InvalidArgumentError('Use a format like `10m`, `2h`, or `7d`.');
+
+    const { onCooldown, remaining } = cooldowns.check('mute', interaction.user.id, 3000);
+    if (onCooldown) throw new CooldownError(remaining);
+
+    // ... do the thing
+
+  } catch (err) {
+    if (err instanceof CooldownError) {
+      return interaction.reply({
+        embeds: [errorEmbed(`Wait **${(err.remaining / 1000).toFixed(1)}s** before using this again.`)],
+        ephemeral: true,
+      });
+    }
+
+    return interaction.reply({
+      embeds: [errorEmbed(err.message)],
+      ephemeral: true,
+    });
+  }
+}
+```
+
+All custom errors extend `Error`, so `err.message` always works as a fallback.

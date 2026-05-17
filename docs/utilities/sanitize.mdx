@@ -1,0 +1,63 @@
+---
+title: Sanitize
+description: Input sanitization helpers for user-provided strings.
+---
+
+# Sanitize
+
+Any time you're taking user input and putting it into a message, embed, or database — sanitize it first.
+
+## sanitizeInput
+
+The main helper. Trims, optionally escapes markdown, and enforces a max length.
+
+```js
+sanitizeInput(input, options?)
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `maxLength` | `number` | `2000` | Truncate to this length |
+| `escapeMarkdown` | `boolean` | `true` | Escape Discord markdown characters |
+| `fallback` | `string` | `''` | Return this if input is empty after sanitizing |
+
+```js
+const { sanitizeInput } = require('discord.js-toolbox');
+
+const reason = sanitizeInput(interaction.options.getString('reason'), {
+  maxLength: 512,
+  fallback: 'No reason provided',
+});
+```
+
+---
+
+## Individual helpers
+
+```js
+escapeMarkdown('**bold** text')
+// → '\\*\\*bold\\*\\* text'
+
+stripMarkdown('**bold** and _italic_')
+// → 'bold and italic'
+
+stripAnsi('\x1b[32mgreen text\x1b[0m')
+// → 'green text'
+
+normalizeWhitespace('too   many    spaces\n\n\nand newlines')
+// → 'too many spaces and newlines'
+```
+
+---
+
+## maskSecret
+
+Hides all but the last `n` characters of a string. Useful for logging tokens or API keys without exposing them.
+
+```js
+maskSecret('my-secret-token-abc123', 6)
+// → '****************abc123'
+
+maskSecret('short', 4)
+// → '*hort'
+```

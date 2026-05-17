@@ -1,0 +1,50 @@
+---
+title: Overview
+description: Discord's new display component system, added March 2025.
+---
+
+# Components V2
+
+Discord released a new component system in March 2025 that replaces the old `content` + `embeds` model with a more flexible layout system. Instead of one blob of text and a list of embeds, you build a tree of typed components — containers, sections, text displays, media galleries, and more.
+
+The toolbox wraps discord.js's V2 builders with cleaner APIs and handles the parts that are easy to get wrong.
+
+## The rules
+
+Before using any of this, there are a few hard restrictions Discord enforces:
+
+<Warning>
+  You **cannot** mix Components V2 with `content`, `embeds`, `poll`, or `stickers` in the same message. Once a message is sent with the V2 flag it can never be removed.
+</Warning>
+
+- Max **40 total components** per message (nested ones count toward this)
+- Max **4000 characters** across all `TextDisplay` components combined
+- All attached files must be explicitly referenced inside a component using `attachment://filename`
+
+## The flag
+
+Every reply or send call that uses V2 components needs `flags: MessageFlags.IsComponentsV2`. The `v2Reply` helper handles this automatically — always use it instead of setting the flag yourself.
+
+```js
+const { v2Reply, buildTextDisplay } = require('discord.js-toolbox');
+
+await interaction.reply(v2Reply([
+  buildTextDisplay('# Hello world\nThis is a V2 message.'),
+]));
+
+// With ephemeral
+await interaction.reply(v2Reply([
+  buildTextDisplay('Something only you can see.'),
+], { ephemeral: true }));
+```
+
+## When to use V2 vs embeds
+
+V2 is worth it when you need richer layouts — profile cards with sidebars, image galleries, sectioned info pages. For simple success/error replies, the embed presets are still faster to write.
+
+---
+
+## Next steps
+
+- [Builders](/docs/components/builders) — all the individual component builders
+- [Presets](/docs/components/presets) — `v2InfoCard` and `v2ProfileCard`

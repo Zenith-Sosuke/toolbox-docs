@@ -1,0 +1,73 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "discord.js-toolbox",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#5865F2",
+    "light": "#7289DA",
+    "dark": "#4752C4"
+  },
+  "topbarLinks": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/Zenith-Sosuke/discord.js-toolbox"
+    },
+    {
+      "name": "npm",
+      "url": "https://www.npmjs.com/package/discord.js-toolbox"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": ["introduction", "installation"]
+    },
+    {
+      "group": "Moderation",
+      "pages": [
+        "docs/moderation/overview",
+        "docs/moderation/safe-actions",
+        "docs/moderation/duration"
+      ]
+    },
+    {
+      "group": "Embeds",
+      "pages": [
+        "docs/embeds/overview",
+        "docs/embeds/presets",
+        "docs/embeds/custom"
+      ]
+    },
+    {
+      "group": "Components V2",
+      "pages": [
+        "docs/components/overview",
+        "docs/components/builders",
+        "docs/components/presets"
+      ]
+    },
+    {
+      "group": "Utilities",
+      "pages": [
+        "docs/utilities/cooldowns",
+        "docs/utilities/pagination",
+        "docs/utilities/formatters",
+        "docs/utilities/validators",
+        "docs/utilities/permissions",
+        "docs/utilities/time",
+        "docs/utilities/logging",
+        "docs/utilities/retry",
+        "docs/utilities/random",
+        "docs/utilities/sanitize",
+        "docs/utilities/errors"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/Zenith-Sosuke/discord.js-toolbox"
+  }
+}

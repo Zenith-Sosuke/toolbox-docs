@@ -1,0 +1,57 @@
+---
+title: Overview
+description: Prebuilt embed styles and a custom embed builder.
+---
+
+# Embeds
+
+Keeping embed styles consistent across a bot is annoying when you're writing them by hand. These helpers give you a set of opinionated defaults so every success message looks the same, every error looks the same, and you're not copy-pasting color codes everywhere.
+
+All functions return a `EmbedBuilder` instance, so you can chain additional methods on top if you need to.
+
+## Preset embeds
+
+| Function | Color | Default title |
+|----------|-------|---------------|
+| `successEmbed` | Green | "Success" |
+| `errorEmbed` | Red | "Error" |
+| `warnEmbed` | Yellow | "Warning" |
+| `infoEmbed` | Blue | "Info" |
+| `loadingEmbed` | Grey | "Loading" |
+
+All of them take the same signature:
+
+```js
+successEmbed(description, title?)
+```
+
+```js
+const { successEmbed, errorEmbed, warnEmbed } = require('discord.js-toolbox');
+
+// Just a description
+interaction.reply({ embeds: [successEmbed('User was banned.')] });
+
+// Override the title
+interaction.reply({ embeds: [errorEmbed('You lack permission to do that.', 'Permission Denied')] });
+```
+
+## randomColor
+
+Returns a random color as a hex integer — useful if you want some variety in non-status embeds.
+
+```js
+const { randomColor, customEmbed } = require('discord.js-toolbox');
+
+const embed = customEmbed({
+  title: 'Random Fact',
+  description: 'Water is wet.',
+  color: randomColor(),
+});
+```
+
+---
+
+## Next steps
+
+- [Presets](/docs/embeds/presets) — full reference for all five preset types
+- [Custom Embeds](/docs/embeds/custom) — `customEmbed` and `buildCard`

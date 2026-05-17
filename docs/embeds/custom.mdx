@@ -1,0 +1,94 @@
+---
+title: Custom Embeds
+description: customEmbed and buildCard for more control over your embed layout.
+---
+
+# Custom Embeds
+
+## customEmbed
+
+For when the presets aren't flexible enough. Pass any combination of options:
+
+```js
+customEmbed({
+  title?,
+  description?,
+  color?,
+  footer?,
+  fields?,
+  thumbnail?,
+  image?,
+})
+```
+
+```js
+const { customEmbed } = require('discord.js-toolbox');
+
+const embed = customEmbed({
+  title: 'User Info',
+  description: `Profile for **${user.tag}**`,
+  color: 0x5865F2,
+  thumbnail: user.displayAvatarURL(),
+  fields: [
+    { name: 'ID', value: user.id, inline: true },
+    { name: 'Created', value: `<t:${Math.floor(user.createdTimestamp / 1000)}:R>`, inline: true },
+  ],
+  footer: 'Requested by ' + interaction.user.tag,
+});
+
+await interaction.reply({ embeds: [embed] });
+```
+
+---
+
+## buildCard
+
+A shortcut for the most common "info card" pattern — title, optional thumbnail/image, fields, and a footer. Same as `customEmbed` under the hood, just a cleaner API for that specific use case.
+
+```js
+buildCard({
+  title,
+  thumbnail?,
+  image?,
+  color?,
+  footer?,
+  fields?,
+})
+```
+
+```js
+const { buildCard } = require('discord.js-toolbox');
+
+const card = buildCard({
+  title: `${member.user.tag}`,
+  thumbnail: member.displayAvatarURL(),
+  color: member.displayColor || 0x5865F2,
+  fields: [
+    { name: 'Joined', value: `<t:${Math.floor(member.joinedTimestamp / 1000)}:R>`, inline: true },
+    { name: 'Roles', value: `${member.roles.cache.size - 1}`, inline: true },
+  ],
+});
+```
+
+---
+
+## buildFieldPages
+
+Splits a large array of fields into multiple embed pages. Returns an array of `EmbedBuilder` instances ready to pass into `paginate`.
+
+```js
+buildFieldPages(fields, baseOptions?, fieldsPerPage?)
+```
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `fields` | `{ name, value, inline? }[]` | — | All the fields |
+| `baseOptions` | `CardOptions` | `{}` | Base embed options (title, color, etc.) |
+| `fieldsPerPage` | `number` | `5` | How many fields per page |
+
+```js
+const { buildFieldPages, paginate } = require('discord.js-toolbox');
+
+const pages = buildFieldPages(allFields, { title: 'Command List', color: 0x5865F2 }, 8);
+await paginate(interaction, pages);
+```

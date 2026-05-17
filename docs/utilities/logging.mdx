@@ -1,0 +1,71 @@
+---
+title: Logging
+description: createLogger — named loggers with ANSI colors, log levels, and timing helpers.
+---
+
+# Logging
+
+A lightweight logger with named instances, ANSI colors, configurable log levels, and a `time()` helper for measuring async operations.
+
+## Zero-setup
+
+A default `logger` export is ready to use immediately:
+
+```js
+const { logger } = require('discord.js-toolbox');
+
+logger.info('Bot is online');
+logger.warn('Rate limit hit');
+logger.error('Failed to connect to database');
+```
+
+---
+
+## createLogger
+
+For named loggers — useful when you want to know which part of your bot is logging.
+
+```js
+const log = createLogger({ name?, level?, timestamps?, colors? });
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `name` | `string` | `undefined` | Shown as a prefix in output |
+| `level` | `LogLevel` | `'info'` | Minimum level to print (`debug`/`info`/`warn`/`error`/`none`) |
+| `timestamps` | `boolean` | `true` | Include timestamps in output |
+| `colors` | `boolean` | `true` | ANSI color output |
+
+```js
+const { createLogger } = require('discord.js-toolbox');
+
+const log = createLogger({ name: 'Database', level: 'debug' });
+
+log.debug('Connecting...');
+log.info('Connected to MongoDB');
+log.warn('Slow query detected');
+log.error('Connection dropped');
+```
+
+---
+
+## log.time
+
+Times an async operation and logs how long it took.
+
+```js
+const done = log.time('Fetch members');
+await guild.members.fetch();
+done(); // logs: [Database] Fetch members — 342ms
+```
+
+---
+
+## Log levels
+
+Setting `level` to `warn` means only `warn` and `error` messages are printed — `debug` and `info` are silenced. Set `level: 'none'` to disable all output.
+
+```js
+// Production — only show warnings and errors
+const log = createLogger({ name: 'Bot', level: process.env.NODE_ENV === 'production' ? 'warn' : 'debug' });
+```

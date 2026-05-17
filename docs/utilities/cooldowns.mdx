@@ -1,0 +1,89 @@
+---
+title: Cooldowns
+description: Per-user, per-command cooldown tracking with CooldownManager.
+---
+
+# Cooldowns
+
+`CooldownManager` tracks cooldowns per user per command, in memory. No database, no external dependencies.
+
+## Setup
+
+Create one instance and reuse it across your commands — don't create a new one per command file or the state won't be shared.
+
+```js
+// cooldowns.js
+const { CooldownManager } = require('discord.js-toolbox');
+module.exports = new CooldownManager();
+```
+
+```js
+// ban.js
+const cooldowns = require('./cooldowns');
+```
+
+---
+
+## .check
+
+```js
+const { onCooldown, remaining } = cooldowns.check(commandName, userId, cooldownMs);
+```
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `commandName` | `string` | Identifies the command |
+| `userId` | `string` | The user's Discord ID |
+| `cooldownMs` | `number` | Cooldown duration in milliseconds |
+
+Returns `{ onCooldown: boolean, remaining: number }`. If `onCooldown` is true, `remaining` is how many milliseconds are left.
+
+```js
+const { onCooldown, remaining } = cooldowns.check('ban', interaction.user.id, 5000);
+
+if (onCooldown) {
+  return interaction.reply({
+    embeds: [errorEmbed(`Wait **${(remaining / 1000).toFixed(1)}s** before using this again.`)],
+    ephemeral: true,
+  });
+}
+```
+
+---
+
+## .clear
+
+Manually removes a cooldown entry. Useful if you want to reset a user's cooldown after a failed attempt.
+
+```js
+cooldowns.clear(commandName, userId);
+```
+
+---
+
+## Full example
+
+```js
+const { CooldownManager, errorEmbed, successEmbed } = require('discord.js-toolbox');
+
+const cooldowns = new CooldownManager();
+
+module.exports = {
+  name: 'daily',
+  async execute(interaction) {
+    const { onCooldown, remaining } = cooldowns.check('daily', interaction.user.id, 86400000); // 24h
+
+    if (onCooldown) {
+      const hours = Math.floor(remaining / 3600000);
+      const minutes = Math.floor((remaining % 3600000) / 60000);
+      return interaction.reply({
+        embeds: [errorEmbed(`Come back in **${hours}h ${minutes}m**.`)],
+        ephemeral: true,
+      });
+    }
+
+    // give reward...
+    await interaction.reply({ embeds: [successEmbed('You claimed your daily reward!')] });
+  },
+};
+```
